@@ -10,8 +10,7 @@ parameters:
   operation:
     value: "x+y"
   training_fraction:
-    # values: [0.2, 0.3, 0.35, 0.4, 0.5, 0.6]
-    value: 0.5
+    value: 0.3
   num_layers:
     value: 2
   dim_model:
@@ -19,16 +18,15 @@ parameters:
   num_heads:
     value: 4
   prime:
-    # values: [47, 97, 149, 197]
-    value: 97
+    value: 47
   batch_size:
     value: 512
   learning_rate:
     value: 1e-3
   weight_decay:
-    values: [0.01, 0.05, 0.25, 0.5, 1.0, 2.0]
-    # value: 0.01
+    value: 0.1
   num_steps:
     value: 1e5
   device:
     value: cuda
+  

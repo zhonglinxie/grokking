@@ -112,7 +112,7 @@ def evaluate(model, val_loader, device, epoch):
             output = model(inputs)[-1,:,:]
             correct += (torch.argmax(output, dim=1) == labels).sum()
             loss += criterion(output, labels) * len(labels)
-    
+
     acc = correct / len(val_loader.dataset)
     loss = loss / len(val_loader.dataset)
 

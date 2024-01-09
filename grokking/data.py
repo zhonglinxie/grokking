@@ -6,8 +6,8 @@ DIVISION_MODULO_OPERATIONS = {
 }
 
 ALL_MODULO_OPERATIONS = {
-    "x+y": lambda x, y, _: (x, y, x + y),
-    "x-y": lambda x, y, _: (x, y, x - y),
+    "x+y": lambda x, y, p: (x, y, (x + y) % p),
+    "x-y": lambda x, y, p: (x, y, (x - y) % p),
     **DIVISION_MODULO_OPERATIONS,
 }
 
