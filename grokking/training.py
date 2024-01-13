@@ -4,7 +4,7 @@ from tqdm import tqdm
 import wandb
 
 from data import get_data
-from model import Transformer
+from model_dropout import Transformer, MLP, LSTMModel
 
 def main(args: dict):
     wandb.init(project="grokking", config=args)
@@ -27,22 +27,51 @@ def main(args: dict):
         config.training_fraction,
         config.batch_size
         )
-    model = Transformer(
-        num_layers=config.num_layers,
-        dim_model=config.dim_model,
-        num_heads=config.num_heads,
-        num_tokens=config.prime + 2,
-        seq_len=5
+    if config.model == 'Transformer':
+        model = Transformer(
+            num_layers=config.num_layers,
+            dim_model=config.dim_model,
+            num_heads=config.num_heads,
+            num_tokens=config.prime + 2,
+            seq_len=5,
+            dropout=config.dropout
+            ).to(device)
+    elif config.model == 'MLP':
+        model = MLP(
+            num_layers=config.num_layers,
+            dim_model=config.dim_model,
+            num_heads=config.num_heads,
+            num_tokens=config.prime + 2,
+            seq_len=5,
+            dropout=config.dropout
+            ).to(device)
+    elif config.model == 'LSTM':
+        model = LSTMModel(
+            num_layers=config.num_layers,
+            dim_model=config.dim_model,
+            hidden_dim=config.num_heads * config.dim_model,
+            num_tokens=config.prime + 2,
+            seq_len=5,
+            dropout=config.dropout
         ).to(device)
-    optimizer = torch.optim.AdamW(
-        model.parameters(),
-        lr=config.learning_rate,
-        betas=(0.9, 0.98),
-        weight_decay=config.weight_decay
-        )
-    scheduler = torch.optim.lr_scheduler.LinearLR(
-        optimizer, start_factor = 0.1, total_iters=9
-    )
+    if config.optimizer == 'Adam':
+        optimizer = torch.optim.Adam(
+            model.parameters(),
+            lr=config.learning_rate,
+            betas=(0.9, 0.98)
+            # weight_decay=config.weight_decay
+            )
+    elif config.optimizer == 'AdamW':
+        optimizer = torch.optim.AdamW(
+            model.parameters(),
+            lr=config.learning_rate,
+            betas=(0.9, 0.98),
+            weight_decay=config.weight_decay
+            )
+    # scheduler = torch.optim.lr_scheduler.LinearLR(
+    #     optimizer, start_factor = 1., end_factor=.1, total_iters=9
+    # )
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=int(config.num_steps/10), gamma=0.8)
 
     num_epochs = ceil(config.num_steps / len(train_loader))
 

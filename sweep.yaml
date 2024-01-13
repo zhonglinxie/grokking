@@ -3,15 +3,23 @@ program: grokking/cli.py
 method: grid
 
 metric:
-  name: validation_loss
+  name: validation/accuracy
   goal: minimize
 
 parameters:
   operation:
     value: "x+y"
   training_fraction:
-    # values: [0.2, 0.3, 0.35, 0.4, 0.5, 0.6]
+    # values: [0.3, 0.4, 0.5, 0.6]
     value: 0.5
+  model:
+    # values: ["Transformer", "MLP", "LSTM"]
+    value: "LSTM"
+  dropout:
+    values: [0.1, 0.2, 0.4]
+  optimizer:
+    # values: ["Adam", "AdamW"]
+    value: "Adam"
   num_layers:
     value: 2
   dim_model:
@@ -26,8 +34,8 @@ parameters:
   learning_rate:
     value: 1e-3
   weight_decay:
-    values: [0.01, 0.05, 0.25, 0.5, 1.0, 2.0]
-    # value: 0.01
+    # values: [0.01, 0.05, 0.25, 0.5, 1.0, 2.0]
+    value: 0.05
   num_steps:
     value: 1e5
   device:
