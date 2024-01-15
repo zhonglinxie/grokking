@@ -1,7 +1,9 @@
 from torch.nn.utils import parameters_to_vector, vector_to_parameters
 from scipy.sparse.linalg import LinearOperator, eigsh
 from torch import Tensor
+import torch.nn as nn
 import copy
+import torch
 
 
 def lanczos(matrix_vector, dim: int, neigs: int=6):
@@ -34,7 +36,7 @@ def compute_hvp(network: nn.Module, loss_fn: nn.Module, X: Tensor, y: Tensor, ve
     hvp = torch.zeros(p, dtype=torch.float, device='cuda')
     vector = vector.cuda()
     # for (X, y) in iterate_dataset(dataset, physical_batch_size):
-    loss = loss_fn(network(X), y) / n
+    loss = loss_fn(network(X)[-1,:,:], y) / n
     # print(loss.grad_fn)
     # for param in network.parameters():
     #     print(param.requires_grad)
@@ -98,7 +100,7 @@ class HessianLargestEigenvalue(torch.autograd.Function):
         vector = evec.cuda()
         # for (X, y) in iterate_dataset(dataset, physical_batch_size):
         with torch.enable_grad():
-            loss = loss_fn(network(X), y) / n
+            loss = loss_fn(network(X)[-1,:,:], y) / n
             grads = torch.autograd.grad(loss, inputs=network.parameters(), create_graph=True)
             dot = parameters_to_vector(grads).mul(vector).sum()
             grads = torch.autograd.grad(dot, network.parameters(), create_graph=True)

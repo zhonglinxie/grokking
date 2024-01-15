@@ -4,6 +4,8 @@ __pycache__/
 *$py.class
 wandb/
 *.pth
+intermediary/
+.vscode/
 
 # C extensions
 *.so

@@ -4,7 +4,7 @@ method: grid
 
 metric:
   name: validation/accuracy
-  goal: minimize
+  goal: maximize
 
 parameters:
   operation:
@@ -14,12 +14,15 @@ parameters:
     value: 0.5
   model:
     # values: ["Transformer", "MLP", "LSTM"]
-    value: "LSTM"
+    value: "Transformer"
+  sharp_penalty:
+    value: 0
   dropout:
-    values: [0.1, 0.2, 0.4]
+    # values: [0.1, 0.2, 0.4]
+    value: 0
   optimizer:
     # values: ["Adam", "AdamW"]
-    value: "Adam"
+    value: "AdamW"
   num_layers:
     value: 2
   dim_model:
@@ -28,7 +31,7 @@ parameters:
     value: 4
   prime:
     # values: [47, 97, 149, 197]
-    value: 97
+    value: 47
   batch_size:
     value: 512
   learning_rate:
